@@ -4,7 +4,7 @@
 * 姓名: 黃映慈
 * 學號: P76114309
 
-## Problem 1: plain Markov Model (Variable Order Markov Model, VOMM)
+## Problem 1: Plain Markov Model (Variable Order Markov Model, VOMM)
 1. 根據order0、1、2來計算每種組合在S(目標基因體序列)中發生的數量
 2. 計算S的長度
 3. 根據order0、1、2來計算每種組合發生的機率
