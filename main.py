@@ -26,11 +26,10 @@ T = labelencoder.fit_transform(T)  # encode T; a: 0, c: 1, g: 2, t: 3
 a = np.array([[0.7, 0.3], [0.2, 0.8]])
 
 # Emission Probabilities
-# b = [[0.1, 0.5, 0.8, 0.3]
-#      [0.9, 0.5, 0.2, 0.7]]
+# b = [[0.4, 0.3, 0.1, 0.2]
+#      [0.2, 0.2, 0.3, 0.3]]
 # b[i, j]: statei to generate j (a, t, c, g)
-b = np.array([[0.1, 0.5, 0.8, 0.3], [0.9, 0.5, 0.2, 0.7]])
-
+b = np.array([[0.4, 0.3, 0.1, 0.2], [0.2, 0.2, 0.3, 0.3]])
 
 # Equal Probabilities for the initial distribution
 pi = np.array((0.5, 0.5))
@@ -89,41 +88,57 @@ def plainMarkov(O, n_state, order):
 # b: emission probability
 # pi: initial probability
 def Forward(O, a, b, pi):
+    for i in range(0, 5):
+        print(O[i])
+        
     # init alpha
-    alpha = np.zeros((O.shape[0], a.shape[0])) # scaled alpha (hat alpha)
-    tmp_alpha = np.zeros(a.shape[0]) # lambda alpha
-    C = np.zeros(O.shape[0])
-    C[0] = np.sum(pi * b[:, O[0]])
-    alpha[0, :] = (pi * b[:, O[0]]) / C[0] # init scaled alpha
+    scaled_alpha = np.zeros((O.shape[0], a.shape[0])) # scaled alpha (hat alpha)
+    alpha = np.zeros(a.shape[0]) # alpha
+    C = np.zeros(O.shape[0])  # scaling factor
+    C[0] = np.sum(pi * b[:, O[0]]) 
+    scaled_alpha[0, :] = (pi * b[:, O[0]]) / C[0] # init scaled alpha
+    P = 0 # probability of the observation
 
     # compute alpha, t: time t
     for t in range(1, O.shape[0]):
         for j in range (a.shape[0]):
-            tmp_alpha[j] = alpha[t - 1] @ a[:, j] * b[j, O[t]]
-            C[t] += tmp_alpha[j]
-        alpha[t, :] = tmp_alpha / C[t] # update alpha
+            alpha[j] = scaled_alpha[t - 1] @ a[:, j] * b[j, O[t]]
+            C[t] += alpha[j]
 
-    return alpha
+        C[t] = 1 / C[t]
+        P += math.log2(C[t])
+        scaled_alpha[t, :] = alpha * C[t] # update alpha
+
+    P *= -1
+    print("Oberservation Probability: ", P)
+
+    return scaled_alpha
 
 ## Backward to learn beta ##
 ## use scaled beta to avoid underflow
 def Backward(O, a, b):
     # init beta
-    beta = np.zeros((O.shape[0], a.shape[0])) # scaled beta
-    tmp_beta = np.zeros(a.shape[0])
+    scaled_beta = np.zeros((O.shape[0], a.shape[0])) # scaled beta
+    beta = np.zeros(a.shape[0])
     C = np.zeros(O.shape[0])
+    P = 0  # probability of the backward observation
 
     # setting beta(T) = 1
-    beta[O.shape[0] - 1] = np.ones((a.shape[0]))
+    scaled_beta[O.shape[0] - 1] = np.ones((a.shape[0]))
 
     # compute beta (from time t-1 to 1)
     for t in range(O.shape[0] - 2, -1, -1):
         for j in range(a.shape[0]):
-           tmp_beta[j] = (beta[t + 1] * b[:, O[t + 1]]) @ a[j, :]
-           C[t + 1] += tmp_beta[j]
-        beta[t, :] = tmp_beta / C[t + 1]
+           beta[j] = (scaled_beta[t + 1] * b[:, O[t + 1]]) @ a[j, :]
+           C[t + 1] += beta[j]
+        C[t + 1] = 1 / C[t + 1]
+        P += math.log2(C[t + 1])
+        scaled_beta[t, :] = beta * C[t + 1]
 
-    return beta
+    P *= -1
+    print("Oberservation Backward Probability: ", P)
+
+    return scaled_beta
 
 ## BaumWelch to learn HMM parameters ##
 def BaumWelch(O, a, b, pi, n_iter=100):
@@ -165,7 +180,7 @@ def BaumWelch(O, a, b, pi, n_iter=100):
 
         b = np.divide(b, denominator.reshape((-1, 1)))
 
-    return {"a": a, "b": b}
+    return a, b
 
 ## Execute plain Markov Model ##
 # print("**plain Markov Model**")
