@@ -80,33 +80,38 @@ def plainMarkov(O, n_state, order):
     return total_p
 
 ## Forward to learn alpha ##
+## bacause the alpha will be too small in the large t
+## here will use scaled alpha to replace alpha
+## origin foward formula: alpha[t, j] = alpha[t - 1] @ a[:, j] * b[j, O[t]]
+
 # O: target segment
 # a: transition prabability
 # b: emission probability
 # pi: initial probability
-## bacause the alpha will be too small in the large t
-## here will use scaled alpha to replace alpha
-## ref: https://birc.au.dk/~cstorm/courses/ML_e19/slides/ml-3-hmm-implementations.pdf
 def Forward(O, a, b, pi):
     # init alpha
-    alpha = np.zeros((O.shape[0], a.shape[0]))
-    alpha[0, :] = pi * b[:, O[0]]
-    c = np.zeros(O.shape[0])
+    alpha = np.zeros((O.shape[0], a.shape[0])) # scaled alpha (hat alpha)
+    tmp_alpha = np.zeros(a.shape[0]) # lambda alpha
+    C = np.zeros(O.shape[0])
+    C[0] = np.sum(pi * b[:, O[0]])
+    alpha[0, :] = (pi * b[:, O[0]]) / C[0] # init scaled alpha
 
     # compute alpha, t: time t
     for t in range(1, O.shape[0]):
         for j in range (a.shape[0]):
-            c[t] = c[t - 1] * b[j, O[t]]
-            # origin foward formula: alpha[t, j] = alpha[t - 1] @ a[:, j] * b[j, O[t]]
-            alpha[t, j] = alpha[t - 1] @ a[:, j] * b[j, O[t]]
-            # alpha[t, j] = delta[t, j] / c[t]
+            tmp_alpha[j] = alpha[t - 1] @ a[:, j] * b[j, O[t]]
+            C[t] += tmp_alpha[j]
+        alpha[t, :] = tmp_alpha / C[t] # update alpha
 
     return alpha
 
 ## Backward to learn beta ##
+## use scaled beta to avoid underflow
 def Backward(O, a, b):
     # init beta
-    beta = np.zeros((O.shape[0], a.shape[0]))
+    beta = np.zeros((O.shape[0], a.shape[0])) # scaled beta
+    tmp_beta = np.zeros(a.shape[0])
+    C = np.zeros(O.shape[0])
 
     # setting beta(T) = 1
     beta[O.shape[0] - 1] = np.ones((a.shape[0]))
@@ -114,8 +119,9 @@ def Backward(O, a, b):
     # compute beta (from time t-1 to 1)
     for t in range(O.shape[0] - 2, -1, -1):
         for j in range(a.shape[0]):
-            beta[t, j] = (beta[t + 1] * b[:, O[t + 1]]) @ a[j, :]
-            # beta[t, j] = math.log2(beta[t, j])
+           tmp_beta[j] = (beta[t + 1] * b[:, O[t + 1]]) @ a[j, :]
+           C[t + 1] += tmp_beta[j]
+        beta[t, :] = tmp_beta / C[t + 1]
 
     return beta
 
@@ -162,14 +168,15 @@ def BaumWelch(O, a, b, pi, n_iter=100):
     return {"a": a, "b": b}
 
 ## Execute plain Markov Model ##
-print("**plain Markov Model**")
-print("probability of order 0:", plainMarkov(S, 4, 0))
-print("probability of order 1:", plainMarkov(S, 4, 1))
-print("probability of order 2:", plainMarkov(S, 4, 2))
+# print("**plain Markov Model**")
+# print("probability of order 0:", plainMarkov(S, 4, 0))
+# print("probability of order 1:", plainMarkov(S, 4, 1))
+# print("probability of order 2:", plainMarkov(S, 4, 2))
 
 ## Execute Baum-Welch Algorithm ## 
 #train model
 n_iter = 5
 a_model, b_model = BaumWelch(S, a.copy(), b.copy(), pi.copy(), n_iter=n_iter)
 
+print("**Baum-Welch Algorithm**")
 print(f'Custom model A is \n{a_model} \n \nCustom model B is \n{b_model}')
