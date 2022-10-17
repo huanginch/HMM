@@ -31,7 +31,7 @@ def Forward(O, a, b, pi, isBW=False):
         scaled_alpha[t, :] = alpha * C[t]  # update alpha
 
     P *= -1
-    print("Oberservation Probability: ", P)
+    # print("Oberservation Probability: ", P)
 
     ## if is called by Baum-Welch, return scaled_alpha
     ## if is called by other function, return P

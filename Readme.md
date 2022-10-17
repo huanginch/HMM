@@ -10,9 +10,9 @@
 3. 根據order0、1、2來計算每種組合發生的機率
 4. 將機率相乘
 5. 執行結果(以log2為底表示): 
-    > * probability of order 0: -1987487.013403616
-    > * probability of order 1: -3932508.748509369
-    > * probability of order 2: -5865361.526298552
+    > * probability of order 0: -1987489.2229455756
+    > * probability of order 1: -3932513.412934355
+    > * probability of order 2: -5865368.844821772
 * 結論: **以 order 2 計算發生的機率明顯較低**
 
 ## Problem 2: Use Baum-Welch Algorithm to learn HMM parameters
@@ -35,9 +35,23 @@
 * 調整初始參數以求得最佳的結果
 
 ## Result
-* 比較兩種模型在S的機率
-  * Plain Markov Model: -5865361.526298552
-  * Hidden Markov Model: -1980439.210874865
-> HMM求得的機率明顯較高
-* Probability of T:
-* Probability of My Chromosome: -1977260.726176619
+1. 
+   * a = [[0.7, 0.3], [0.2, 0.8]]
+   * b = [[0.4, 0.3, 0.1, 0.2], [0.2, 0.2, 0.3, 0.3]]
+   * pi = [0.5, 0.5] 
+   * 比較兩種模型在S的機率
+     * Plain Markov Model: -5865368.844821772
+     * Hidden Markov Model: -1982116.5370315884
+      > HMM求得的機率明顯較高
+   * Probability of T: -2022207.7208511021
+   * Probability of My Chromosome: -1977262.8477736774
+2. 
+   * a = [[0.7, 0.3], [0.2, 0.8]]
+   * b = [[0.4, 0.3, 0.1, 0.2], [0.2, 0.2, 0.3, 0.3]]
+   * pi = [0.5, 0.5] 
+   * 比較兩種模型在S的機率
+     * Plain Markov Model: -5865368.844821772
+     * Hidden Markov Model: -1982116.5370315884
+      > HMM求得的機率明顯較高
+   * Probability of T: -2022207.7208511021
+   * Probability of My Chromosome: -1977262.8477736774

@@ -5,6 +5,7 @@ import numpy as np
 from sklearn import preprocessing
 import MM
 import HMM
+import re
 
 labelencoder = preprocessing.LabelEncoder()  # use to encode the DNA sequence
 labelencoder.fit(['a', 'c', 'g', 't'])  # fit the DNA sequence
@@ -16,26 +17,6 @@ S = str(S) # change to string
 S = S.lower()  # change to lowercase
 S = list(S) # change to list
 S = labelencoder.transform(S)  # encode S; a: 0, c: 1, g: 2, t: 3
-
-T = genes.get_seq('NC_000007.14', 100000, 1100000) # get T segment
-T = str(T) # change to string
-T = T.lower() # change to lowercase
-T = list(T)  # change to list
-
-print(T[139263])
-# encode S; a: 0, c: 1, g: 2, t: 3
-# if error appears, it meanns the T segment has 
-# a different base other than a, c, g, t
-T = labelencoder.transform(T)  
-print(T[139263])
-
-# get my_chromosome segment
-my_chromosome = genes.get_seq('NC_000009.12', 100000, 1100000)
-my_chromosome = str(my_chromosome)  # change to string
-my_chromosome = my_chromosome.lower()  # change to lowercase
-my_chromosome = list(my_chromosome)  # change to list
-# encode my_chromosome; a: 0, c: 1, g: 2, t: 3
-my_chromosome = labelencoder.transform(my_chromosome)
 
 # Transition Probabilities
 # two state in the problem: 0 and 1
@@ -64,10 +45,31 @@ print("**Baum-Welch Algorithm**")
 print("Computing...")
 
 #train model
-n_iter = 5
+n_iter = 50
 a_model, b_model = HMM.BaumWelch(S, a.copy(), b.copy(), pi.copy(), n_iter=n_iter)
 
 print(f'Custom model A is \n{a_model} \n \nCustom model B is \n{b_model}')
 print("HMM Observation Probability for S:", HMM.Forward(S, a_model, b_model, pi))
-print("HMM Observation Probability for T:", HMM.Forward(T, a_model, b_model, pi))
+
+T = genes.get_seq('NC_000007.14', 100000, 1100000)  # get T segment
+T = str(T)  # change to string
+T = T.lower()  # change to lowercase
+list_T = re.split('n+', T)  # split the sequence by 'n'
+P_T = 0  # total probability of T
+
+for i in range(len(list_T)):
+    subT = list(list_T[i])  # change to list
+    subT = labelencoder.transform(subT)  # encode S; a: 0, c: 1, g: 2, t: 3
+    P_T += HMM.Forward(subT, a_model, b_model, pi)
+
+print("HMM Observation Probability for T:", P_T)
+
+# get my_chromosome segment
+my_chromosome = genes.get_seq('NC_000009.12', 100000, 1100000)
+my_chromosome = str(my_chromosome)  # change to string
+my_chromosome = my_chromosome.lower()  # change to lowercase
+my_chromosome = list(my_chromosome)  # change to list
+# encode my_chromosome; a: 0, c: 1, g: 2, t: 3
+my_chromosome = labelencoder.transform(my_chromosome)
+
 print("HMM Observation Probability for My Chromosome:", HMM.Forward(my_chromosome, a_model, b_model, pi))
