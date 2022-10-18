@@ -41,17 +41,21 @@
    * pi = [0.5, 0.5] 
    * 比較兩種模型在S的機率
      * Plain Markov Model: -5865368.844821772
-     * Hidden Markov Model: -1982116.5370315884
+     * Hidden Markov Model: -1980441.2896459978
       > HMM求得的機率明顯較高
-   * Probability of T: -2022207.7208511021
-   * Probability of My Chromosome: -1977262.8477736774
-2. 
-   * a = [[0.7, 0.3], [0.2, 0.8]]
-   * b = [[0.4, 0.3, 0.1, 0.2], [0.2, 0.2, 0.3, 0.3]]
+   * Probability of T: -2017730.4370893016
+   * Probability of My Chromosome: -1975503.4924122896
+2. 尋找最佳的參數
+   * a = [[0.3, 0.7], [0.4, 0.6]]
+   * b = [[0.25, 0.35, 0.1, 0.3], [0.6, 0.1, 0.2, 0.1]]
    * pi = [0.5, 0.5] 
-   * 比較兩種模型在S的機率
-     * Plain Markov Model: -5865368.844821772
-     * Hidden Markov Model: -1982116.5370315884
-      > HMM求得的機率明顯較高
-   * Probability of T: -2022207.7208511021
-   * Probability of My Chromosome: -1977262.8477736774
+   * Probability of S: -1974698.904040511
+   * Probability of T: -2014039.2392374827
+   * Probability of My Chromosome: -1969749.9654928665
+3. 尋找最佳的參數
+   * a = [[0.68, 0.32], [0.24, 0.76]]
+   * b = [[0.1, 0.3, 0.05, 0.55], [0.4, 0.1, 0.3, 0.2]]
+   * pi = [0.3, 0.7] 
+   * Probability of S: -1974321.4514466282
+   * Probability of T: -2013791.3477533706
+   * Probability of My Chromosome: -1969610.2184085941

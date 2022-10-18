@@ -23,16 +23,16 @@ S = labelencoder.transform(S)  # encode S; a: 0, c: 1, g: 2, t: 3
 # a = [[0.7, 0.3]
 #      [0.2, 0.8]]
 # a[i, j]: statei -> statej
-a = np.array([[0.7, 0.3], [0.2, 0.8]])
+a = np.array([[0.68, 0.32], [0.24, 0.76]])
 
 # Emission Probabilities
 # b = [[0.4, 0.3, 0.1, 0.2]
 #      [0.2, 0.2, 0.3, 0.3]]
 # b[i, j]: statei to generate j (a, t, c, g)
-b = np.array([[0.4, 0.3, 0.1, 0.2], [0.2, 0.2, 0.3, 0.3]])
+b = np.array([[0.1, 0.3, 0.05, 0.55], [0.4, 0.1, 0.3, 0.2]])
 
 # Equal Probabilities for the initial distribution
-pi = np.array((0.5, 0.5))
+pi = np.array((0.3, 0.7))
 
 ## Execute plain Markov Model ##
 print("**plain Markov Model**")

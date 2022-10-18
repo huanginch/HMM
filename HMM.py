@@ -31,7 +31,6 @@ def Forward(O, a, b, pi, isBW=False):
         scaled_alpha[t, :] = alpha * C[t]  # update alpha
 
     P *= -1
-    # print("Oberservation Probability: ", P)
 
     ## if is called by Baum-Welch, return scaled_alpha
     ## if is called by other function, return P
@@ -50,7 +49,6 @@ def Backward(O, a, b):
     scaled_beta = np.zeros((O.shape[0], a.shape[0]))  # scaled beta
     beta = np.zeros(a.shape[0])
     C = np.zeros(O.shape[0])
-    P = 0  # probability of the backward observation
 
     # setting beta(T) = 1
     scaled_beta[O.shape[0] - 1] = np.ones((a.shape[0]))
@@ -64,14 +62,9 @@ def Backward(O, a, b):
         P += math.log2(C[t + 1])
         scaled_beta[t, :] = beta * C[t + 1]
 
-    P *= -1
-    # print("Oberservation Backward Probability: ", P)
-
     return scaled_beta
 
 ## BaumWelch to learn HMM parameters ##
-
-
 def BaumWelch(O, a, b, pi, n_iter=100):
     N = a.shape[0]
     T = len(O)  # total time
