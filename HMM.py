@@ -42,11 +42,6 @@ def Forward(O, a, b, pi, isBW=False):
 ## Backward to learn beta ##
 ## use scaled beta to avoid underflow
 ## orign formula: beta[t + 1] = (beta[t + 1] * b[:, O[t + 1]]) @ a[j, :]
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 70cd48e268848d87f4e67bed1085799ef5f84994
 def Backward(O, a, b):
     # init beta
     scaled_beta = np.zeros((O.shape[0], a.shape[0]))  # scaled beta
@@ -62,10 +57,6 @@ def Backward(O, a, b):
            beta[j] = (scaled_beta[t + 1] * b[:, O[t + 1]]) @ a[j, :]
            C[t + 1] += beta[j]
         C[t + 1] = 1 / C[t + 1]
-<<<<<<< HEAD
-=======
-        P += math.log2(C[t + 1])
->>>>>>> 70cd48e268848d87f4e67bed1085799ef5f84994
         scaled_beta[t, :] = beta * C[t + 1]
 
     return scaled_beta
