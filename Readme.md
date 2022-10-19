@@ -59,3 +59,4 @@
    * Probability of S: -1974321.4514466282
    * Probability of T: -2013791.3477533706
    * Probability of My Chromosome: -1969610.2184085941
+4. Run time: 1556.4747018814087 seconds, Memory usage:
