@@ -1,9 +1,6 @@
 # Markov Model and Hidden Markov Model in Python
 >[Problem Link](https://paulhorton.gitlab.io/coursesTaught/GenomeInformatics/GenomeInformatics202210_homework1.html)
 
-* 姓名: 黃映慈
-* 學號: P76114309
-
 ## Problem 1: Plain Markov Model (Variable Order Markov Model, VOMM)
 1. 根據order0、1、2來計算每種組合在S(目標基因體序列)中發生的數量
 2. 計算S的長度
